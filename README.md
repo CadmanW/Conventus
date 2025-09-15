@@ -1,10 +1,17 @@
 # Conventus
 Self hosted open source meeting software
 
-## Structure
-- Everything written in NodeJS
-- MariaDB or SQLite
+### How to set up
+```bash
+docker compose build
 
-1. NodeJS Webserver listening on port 80 for http requests
-2. Respond to http requests appropriately to serve up the webpages
-3. Establish (MCU or SFU) network connections for streaming video between the 
+docker compose up
+```
+
+## Project Structure
+
+
+## Package Documentation
+- [Child Process](https://nodejs.org/api/child_process.html)
+- [HTTP](https://nodejs.org/api/http.html)
+- [OS](https://nodejs.org/api/os.html)

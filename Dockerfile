@@ -8,10 +8,10 @@
 FROM node:22.19.0-alpine
 
 # Use production node environment by default.
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 
-WORKDIR /app
+WORKDIR /
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.npm to speed up subsequent builds.
@@ -29,7 +29,7 @@ USER node
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 80
+EXPOSE 8080
 
 # Run the application.
-CMD ["node", "webserver.js"]
+CMD ["npm", "start"]

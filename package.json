@@ -1,0 +1,22 @@
+{
+  "name": "conventus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node ./NodeJS/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CadmanW/Conventus.git"
+  },
+  "author": "Cadman Warren",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CadmanW/Conventus/issues"
+  },
+  "homepage": "https://github.com/CadmanW/Conventus#readme",
+  "dependencies": {
+    "http": "^0.0.1-security"
+  }
+}
