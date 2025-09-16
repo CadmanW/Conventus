@@ -1,7 +1,5 @@
 const http = require("http");
 
-const PORT = 8080;
-
 const server = http.createServer();
 
 server.on("request", (req, res) => {
@@ -10,6 +8,6 @@ server.on("request", (req, res) => {
     res.end("Hello, World! (from NodeJS in Docker, for Conventus :)");
 });
 
-server.listen(PORT, "0.0.0.0", () => {
-    console.log(`server listening on port ${PORT}`);
+server.listen(80, "0.0.0.0", () => {
+    console.log(`webserver listening at <this_machine's_ipv4>:8080`);
 });
