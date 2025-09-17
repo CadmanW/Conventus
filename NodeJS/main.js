@@ -1,3 +1,4 @@
 const fork = require("child_process").fork;
 
-const webserver = fork("/NodeJS/webserver/webserver.js");
+const web_server = fork("/NodeJS/webserver/webserver.js");
+const webRTC_server = fork ("/NodeJS/webRTC_server.js");
