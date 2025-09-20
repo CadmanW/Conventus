@@ -4,19 +4,23 @@ const path = require("path");
 
 const server = http.createServer();
 
+// Gets the correct file type requested
 const mime_types = {
     ".html": "text/html",
     ".css": "text/css",
     ".js": "text/javascript"
 };
 
+// Request listener
 server.on("request", (request, response) => {
     if (request.method == "GET") {
 
+        // Gets the index.html file from directed requested if no specific file is requested
         if (request.url.slice(-1) == "/") {
             request.url += "index.html";
         }
 
+        // Respond with the correct file
         fs.readFile(path.join("/NodeJS/webserver/www", request.url), 'utf-8', (err, data) => {
             if (err) {
                 console.error(err);
@@ -30,6 +34,7 @@ server.on("request", (request, response) => {
     }
 });
 
+// Start the webserver
 server.listen(80, "0.0.0.0", () => {
     console.log(`webserver.js: listening at <this_machine's_ipv4>:8080`);
 });
