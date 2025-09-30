@@ -53,10 +53,6 @@ Then
  
 
 ## Node Packages
-> ### Child Process
-> [Docs](https://nodejs.org/api/child_process.html)
->
-> This package is being used so that I can run JS files in node, from other JS files in node. Basically, I'm running other NodeJS files as sub-proccesses of main.js
 
 > ### HTTP
 > [Docs](https://nodejs.org/api/http.html)
