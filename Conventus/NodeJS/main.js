@@ -1,7 +1,7 @@
-//! WEBSERVER 1 - 41
+//! WEBSERVER
 const fs = require("fs");
-const http = require("http");
 const path = require("path");
+const http = require("http");
 
 const server = http.createServer();
 
@@ -47,7 +47,7 @@ server.listen(80, "0.0.0.0", () => {
 
 
 //! Signaling Server
-const 
+
 
 
 
@@ -55,8 +55,6 @@ const
 
 
 //! WEB RTC
-const RTC = new RTCPeerConnection();
-
 
 
 

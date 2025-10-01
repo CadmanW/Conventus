@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conventus</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <main>
+        <section id="login-form-container">
+            <h1 id="title">Conventus</h1>
+        </section>
+    </main>
+
+    <!-- background network topology svg -->
+    <svg 
+        id="background"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid slice"
+        viewBox="0 0 100 100"
+        width="70%"
+        height="100%">
+
+        <g vectorEffect="non-scaling-stroke">
+
+            <!-- Endpoints inner circle-->
+            <g fill="#eee">
+                <circle cx="5" cy="50" r="3" class="endpoints-inner"/>
+                <circle cx="23" cy="30" r="3" class="endpoints-inner"/>
+                <circle cx="23" cy="70" r="3" class="endpoints-inner"/>
+                <circle cx="50" cy="20" r="3" class="endpoints-inner"/>
+                <circle cx="50" cy="80" r="3" class="endpoints-inner"/>
+                <circle cx="77" cy="30" r="3" class="endpoints-inner"/>
+                <circle cx="77" cy="70" r="3" class="endpoints-inner"/>
+                <circle cx="95" cy="50" r="3" class="endpoints-inner"/>
+            </g>
+
+            <!-- Endpoints outer ring-->
+            <g fill="none" stroke="#eee" stroke-width="0.5">
+                <circle cx="5" cy="50" r="4" class="endpoints-outer"/>
+                <circle cx="23" cy="30" r="4" class="endpoints-outer"/>
+                <circle cx="23" cy="70" r="4" class="endpoints-outer"/>
+                <circle cx="50" cy="20" r="4" class="endpoints-outer"/>
+                <circle cx="50" cy="80" r="4" class="endpoints-outer"/>
+                <circle cx="77" cy="30" r="4" class="endpoints-outer"/>
+                <circle cx="77" cy="70" r="4" class="endpoints-outer"/>
+                <circle cx="95" cy="50" r="4" class="endpoints-outer"/>
+            </g>
+
+            <!-- Connections (lines) -->
+            <g stroke="#eee" stroke-width="0.5">
+                <line x1="5" y1="50" x2="50" y2="50" id="connections-first"/>
+                <line x1="50" y1="50" x2="23" y2="30" class="connections"/>
+                <line x1="50" y1="50" x2="23" y2="70" class="connections"/>
+                <line x1="50" y1="50" x2="50" y2="20" class="connections"/>
+                <line x1="50" y1="50" x2="50" y2="80" class="connections"/>
+                <line x1="50" y1="50" x2="77" y2="30" class="connections"/>
+                <line x1="50" y1="50" x2="77" y2="70" class="connections"/>
+                <line x1="50" y1="50" x2="95" y2="50" class="connections"/>
+            </g>
+        </g>
+    </svg>
+
+    <script src="login.js"></script>
+</body>
+</html>
