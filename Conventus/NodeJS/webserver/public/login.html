@@ -2,8 +2,8 @@
 <html lang="en-us">
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conventus</title>
@@ -14,9 +14,13 @@
         <section id="login-form-container">
             <h1 id="title">Conventus</h1>
             <form id="login-form" action="" method="post">
-                <input class="login-input" type="text" placeholder="Username" name="username">
-                <input class="login-input" type="password" placeholder="Password" name="password">
-                <button id="login-form-submit-btn" type="submit">Login</button>
+                <input class="login-input" id="username-input" type="text" placeholder="Username" name="username">
+                <input class="login-input" id="password-input" type="password" placeholder="Password" name="password">
+
+                <div id="login-form-button-container">
+                    <button id="login-form-btn" type="submit">Login</button>
+                    <button id="login-form-btn" type="submit">Create Account</button>
+                </div>
             </form>
         </section>
     </main>

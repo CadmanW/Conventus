@@ -2,9 +2,9 @@
   "name": "conventus",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "webserver.js",
   "scripts": {
-    "start": "node ./NodeJS/main.js"
+    "start": "node ./NodeJS/webserver/webserver.js"
   },
   "repository": {
     "type": "git",

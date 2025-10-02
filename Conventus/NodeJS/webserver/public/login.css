@@ -74,8 +74,11 @@ main {
                 padding: 0.2em;
             }
 
-            #login-form-submit-btn {
-                height: 2em;
-                width: 5em;
-                font-size: 1.2em;
+            #login-form-button-container {
+                width: 100%;
             }
+
+                #login-form-btn {
+                    height: 2em;
+                    font-size: 1.2em;
+                }
