@@ -1,75 +1,46 @@
 # Conventus
-Self hosted open source meeting software
+Self hosted open source media conferencing/meeting web app
 
-## How to set up
+# Set Up / Getting Started
+
+
+# IF WANTING TO FORK THIS PROJECT PLEASE READ THE FOLLOWING DEV NOTES
+This section is about how you can develop this project further, and some basics to know before you start developing. I also documented anything that isn't just the JavaScript in the files, such as commands I ran for setup/installation.
+
+## NodeJS
+NPM (Node Package Manager) helps manage dependencies and install modules.
+
+To set up this node project, first I ran ```npm init``` to create the **package.json** file
+
+Then to install modules I ran ```npm install <module>``` to create the **package-lock.json** file. This file keeps tracks of modules, dependencies, and their versions
+
+## MariaDB
+First I installed MariaDB, secured the installation, started it, and logged into the MariaDB CLI as root
 ```bash
-#Allow the port LAN access through UFW
-sudo ufw allow 8080/tcp
+# Install and start
+sudo apt update
+sudo apt install mariadb-server mariadb-client
+sudo mariadb-secure-installation
+systemctl start mariadb
 
-# Enable firewall
-sudo ufw enable
-
-# Finally, start the webserver by building the docker, then running the container using the compose.yaml file
-docker compose up --build
-
+# Login to MariaDB
+mariadb -u root -p
 ```
 
-## What happens when you run the commands above?
-```bash
- sudo ufw allow 8080/tcp
- sudo ufw enable
- ```
- These just enable UFW, linux's firewall magaer, and sets a new rule to allow incoming connections over TCP on port 8080.
-
- ```bash
-docker compose up --build
+Then created the databse "conventus" and entered it
+```sql
+CREATE DATABASE conventus;
+USE conventus
 ```
-Docker is a big one. I honestly don't know exactly what this does, but it "builds" the project using ```compose.yaml``` and ```dockerfile```.
-```compose.yaml``` links port 8080 on the host machine to port 80 on the VM that Docker creates for the container, and specifies what other containers should be made for other applications; such as the NodeJS webserver and the database.
-```dockerfile``` is docker's configureation file.
-As specified in the ```dockerfile```, in the NodeJS webserver container; ```npm start``` is ran to actually start Node.
-```npm start``` is specified in ```package.json``` under scripts:
-```json
-"scripts": {
-    "start": "node ./NodeJS/main.js"
-}
+Once in the conventus DB, create the tables.
+### Create table
+```sql
+CREATE TABLE users(
+    user_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    email VARCHAR(40) NOT NULL,
+    password VARCHAR(40) NOT NULL,
+    date_created TIMESTAMP NOT NULL
+);
+DESCRIBE users;
 ```
-This runs ```main.js```.
-This is what I call my "node controller".
-The node controller is used to run all the Node files as a subprocess of ```main.js```.
-
-When ```webserver.js``` is ran, the following happens:
-
-1. libraries are imported
-2. the webserver is created using node:http
-3. I declare ```mime_types```
-
-Now that everything in up and running, what happens when you try to reach the machine's IP at port 8080?
-
-First, the request is forwarded from port 8080 on the local machine to port 80 in the webserver container.
-Then
-
-
- 
-
-## Node Packages
-
-> ### HTTP
-> [Docs](https://nodejs.org/api/http.html)
->
-> Used for the webserver
-
-> ### FS
-> [Docs](https://nodejs.org/api/fs.html)
->
-> Used for local file r/w
-
-> ### Path
-> [Docs](https://nodejs.org/api/path.html)
->
-> Used to normalize paths to files
-
-> ### WS
-> [Docs](https://github.com/websockets/ws/blob/HEAD/doc/ws.md)
->
-> This will be used to create websocket connections
+```DESCRIBE``` just displays column info of the table

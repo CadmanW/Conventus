@@ -1,10 +1,10 @@
 {
   "name": "conventus",
   "version": "1.0.0",
-  "description": "",
-  "main": "webserver.js",
+  "description": "backend for conventus",
+  "main": "/webserver.js",
   "scripts": {
-    "start": "node ./NodeJS/webserver/webserver.js"
+    "start": "node /webserver.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/CadmanW/Conventus#readme",
   "dependencies": {
-    "http": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7"
   }
 }

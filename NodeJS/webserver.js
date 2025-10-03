@@ -1,7 +1,11 @@
 //! WEBSERVER
+// node modules
 const fs = require("fs");
 const path = require("path");
 const http = require("http");
+
+// run my other nodeJS files
+require(path.resolve(__dirname, "mariadb/mariadb.js"));
 
 function isSanitized(str) {
     const allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^*-_,.";
@@ -29,7 +33,7 @@ server.on("request", (request, response) => {
         }
 
         // Read the requested file
-        fs.readFile(path.join(__dirname + "/public", request.url), 'utf-8', (err, data) => {
+        fs.readFile(path.join(`${__dirname}/public`, request.url), 'utf-8', (err, data) => {
             // Make sure the file requests actually exists before serving it
             if (err) {
                 console.error(err);
@@ -59,7 +63,7 @@ server.on("request", (request, response) => {
 
                 if (isSanitized(jsonData.username) && isSanitized(jsonData.password)) {
                     //todo ADD THE ACCOUNT TO MARIADB DATABASE
-                }
+                } else {throw Error(`user input:\n  username:`}
             } catch (e) {
                 console.log("POST request error:\n" + e);
             }
