@@ -4,8 +4,9 @@ const fs = require("fs");
 const path = require("path");
 const http = require("http");
 
-// run my other nodeJS files
-require(path.resolve(__dirname, "mariadb/mariadb.js"));
+// iomport my other nodeJS files
+// Even though we don't explicitly use maraiDBpool here, it is used by mariaDBaddUser() so we save the connection as a global
+const mariaDB = require(path.resolve(__dirname, "mariadb/mariadb.js"));
 
 function isSanitized(str) {
     const allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^*-_,.";
@@ -56,14 +57,13 @@ server.on("request", (request, response) => {
         });
 
         // Use the data when all chunks are recieved
-        request.on("end", () => {
-
+        request.on("end", async () => {
             try {
                 const jsonData = Object.fromEntries(new URLSearchParams(body));
 
-                if (isSanitized(jsonData.username) && isSanitized(jsonData.password)) {
-                    //todo ADD THE ACCOUNT TO MARIADB DATABASE
-                } else {throw Error(`user input:\n  username:`}
+                if (isSanitized(jsonData.email) && isSanitized(jsonData.password)) {
+                    await mariaDB.addUser(jsonData.email, jsonData.password);
+                } else throw Error(`user input:\n  username:`);
             } catch (e) {
                 console.log("POST request error:\n" + e);
             }

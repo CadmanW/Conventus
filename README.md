@@ -8,6 +8,13 @@ Self hosted open source media conferencing/meeting web app
 This section is about how you can develop this project further, and some basics to know before you start developing. I also documented anything that isn't just the JavaScript in the files, such as commands I ran for setup/installation.
 
 ## NodeJS
+
+Installing nodeJS
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+nvm install 22
+```
+This downloads NVM (Node Package Manager)
 NPM (Node Package Manager) helps manage dependencies and install modules.
 
 To set up this node project, first I ran ```npm init``` to create the **package.json** file
