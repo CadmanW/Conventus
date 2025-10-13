@@ -6,7 +6,7 @@ formEl.addEventListener("submit", async (event) => {
     const reqBody = {email: formEl.elements.email.value, password: formEl.elements.password.value};
 
     try {
-        const response = await fetch("", {
+        const response = await fetch("/api/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -18,9 +18,17 @@ formEl.addEventListener("submit", async (event) => {
             throw Error(`Response status: ${response.status}`);
         }
 
-        const data = await response.json();
+        const responseJSON = await response.json();
 
-        console.log(data);
+        if (responseJSON.account_created) {
+            alert(`Account for ${reqBody.email} created. You may now login.`)
+        }
+
+        if (responseJSON.login_success) {
+            location.replace("/main/main.html");
+        }
+
+        console.log(responseJSON);
 
 
     } catch (e) {

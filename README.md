@@ -47,7 +47,7 @@ CREATE TABLE users(
     email VARCHAR(40) NOT NULL,
     password VARCHAR(40) NOT NULL,
     session_id CHAR(15),
-    date_created TIMESTAMP NOT NULL
+    date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 DESCRIBE users;
 ```

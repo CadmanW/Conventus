@@ -40,6 +40,10 @@ server.on("request", (request, response) => {
 
     if (request.method === "GET") {
 
+        //TODO: rewrite this ton use authentication n stuff
+
+        console.log(request.url);
+
         // Gets the login.html file if no specific file is requested
         if (request.url.slice(-1) === "/") {
             request.url += "/login/login.html";
@@ -60,68 +64,74 @@ server.on("request", (request, response) => {
     }
     else if (request.method === "POST") {
 
-        // The body of a POST request is sent in chunks, so we have to wait for all of these chunks to be recieved before doing anything to the data
-        let body = "";
 
-        // Collect the chunks
-        request.on("data", chunk => body += chunk.toString());
+        // Handle a login
+        if (request.url === "/api/login") {
+            // The body of a POST request is sent in chunks, so we have to wait for all of these chunks to be recieved before doing anything to the data
+            let body = "";
 
-        // Use the data when all chunks are recieved
-        request.on("end", async () => {
-            let responseObj = {
-                login_success: false,
-                account_created: false,
-                message: "",
-            };
-            response.setHeader("Content-Type", "application/json");
+            // Collect the chunks
+            request.on("data", chunk => body += chunk.toString());
 
-            try {
-                // Parse request for email and password
-                const {email, password} = JSON.parse(body);
+            // Use the data when all chunks are recieved
+            request.on("end", async () => {
+                let responseObj = {
+                    login_success: false,
+                    account_created: false,
+                    message: "",
+                };
+                response.setHeader("Content-Type", "application/json");
 
-                // Only do anything if user input is sanitized
-                if (isSanitized(email) && isSanitized(password)) {
-                    const connection = await pool.getConnection();
+                try {
+                    // Parse request for email and password
+                    const {email, password} = JSON.parse(body);
 
-                    // Check if the user exists so we can either LOGIN or CREATE an account
-                    if ((await connection.query("SELECT email FROM users WHERE email=?", [email])).length) {
-                        // LOGIN
-                        // check if password sent matches DB password for the email given
-                        if (password === (await connection.query("SELECT password FROM users WHERE email=?", email))[0].password) {
-                            const sessionID = Math.floor(Math.random() * 10**15);
-                            // Set the session ID in DB
-                            await connection.query("UPDATE users SET session_id=? WHERE email=?", [sessionID, email]);
-                            responseObj.login_success = true;
-                            responseObj.message = "Login successful";
-                            // Set the session_id cookie to expire the next day
-                            const date = new Date();
-                            date.setDate(date.getDate() + 1);
-                            response.setHeader("Set-Cookie", `session_id=${sessionID}; Expires=${date}`);
-                        } else {
-                            responseObj.login_success = false;
-                            responseObj.message = "Invalid email or password";
+                    // Only do anything if user input is sanitized
+                    if (isSanitized(email) && isSanitized(password)) {
+                        const connection = await pool.getConnection();
+
+                        // Check if the user exists so we can either LOGIN or CREATE an account
+                        if ((await connection.query("SELECT email FROM users WHERE email=?", [email])).length) {
+                            // LOGIN
+                            // check if password sent matches DB password for the email given
+                            if (password === (await connection.query("SELECT password FROM users WHERE email=?", email))[0].password) {
+                                const sessionID = Math.floor(Math.random() * 10**15);
+                                // Set the session ID in DB
+                                await connection.query("UPDATE users SET session_id=? WHERE email=?", [sessionID, email]);
+                                responseObj.login_success = true;
+                                responseObj.message = "Login successful";
+                                // Set the session_id cookie to expire the next day
+                                const date = new Date();
+                                date.setDate(date.getDate() + 1);
+                                response.setHeader("Set-Cookie", `session_id=${sessionID}; Expires=${date}`);
+                            } else {
+                                responseObj.login_success = false;
+                                responseObj.message = "Invalid email or password";
+                            }
+                        } else { // CREATE the account
+                            await connection.query("INSERT INTO users (email, password) VALUES (?, ?);", [email, password]);
+                            responseObj.account_created = true;
+                            responseObj.message = "Account successfuly created";
                         }
-                    } else { // CREATE the account
-                        await connection.query("INSERT INTO users (email, password) VALUES (?, ?);", [email, password]);
-                        responseObj.account_created = true;
-                        responseObj.message = "Account successfuly created";
+
+                        connection.release();
+
+                        response.statusCode = 200;
+                        response.end(JSON.stringify(responseObj));
+
+                    } else {
+                        throw Error("Invalid Input");
                     }
-
-                    connection.release();
-
-                    response.statusCode = 200;
+                } catch (e) {
+                    console.error(e.stack);
+                    response.statusCode = 500;
+                    responseObj.message = e;
                     response.end(JSON.stringify(responseObj));
-
-                } else {
-                    throw Error("Invalid Input");
                 }
-            } catch (e) {
-                console.error(e.stack);
-                response.statusCode = 500;
-                responseObj.message = e;
-                response.end(JSON.stringify(responseObj));
-            }
-        });
+            });
+        }
+
+
     }
 });
 
