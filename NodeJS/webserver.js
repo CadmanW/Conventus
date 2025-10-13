@@ -42,7 +42,7 @@ server.on("request", (request, response) => {
 
         // Gets the login.html file if no specific file is requested
         if (request.url.slice(-1) === "/") {
-            request.url += "/login.html";
+            request.url += "/login/login.html";
         }
 
         // Read the requested file
@@ -64,37 +64,63 @@ server.on("request", (request, response) => {
         let body = "";
 
         // Collect the chunks
-        request.on("data", chunk => {
-            body += chunk.toString();
-        });
+        request.on("data", chunk => body += chunk.toString());
 
         // Use the data when all chunks are recieved
         request.on("end", async () => {
+            let responseObj = {
+                login_success: false,
+                account_created: false,
+                message: "",
+            };
+            response.setHeader("Content-Type", "application/json");
+
             try {
-                const {email, password} = Object.fromEntries(new URLSearchParams(body));
+                // Parse request for email and password
+                const {email, password} = JSON.parse(body);
 
+                // Only do anything if user input is sanitized
                 if (isSanitized(email) && isSanitized(password)) {
-                    // Check to see if this is a signin or signup by checking if email already is in database or not
-                    if (await pool.query("SELECT email FROM users WHERE email=?", email).email) {
-                        // login
-                        if (password == await pool.query("SELECT password FROM users WHERE email=?", email).password) {
-                            const sessionID = Math.random() * 10**15;  
+                    const connection = await pool.getConnection();
 
-                            await pool.query("UPDATE users SET session_id=? WHERE email", sessionID);
+                    // Check if the user exists so we can either LOGIN or CREATE an account
+                    if ((await connection.query("SELECT email FROM users WHERE email=?", [email])).length) {
+                        // LOGIN
+                        // check if password sent matches DB password for the email given
+                        if (password === (await connection.query("SELECT password FROM users WHERE email=?", email))[0].password) {
+                            const sessionID = Math.floor(Math.random() * 10**15);
+                            // Set the session ID in DB
+                            await connection.query("UPDATE users SET session_id=? WHERE email=?", [sessionID, email]);
+                            responseObj.login_success = true;
+                            responseObj.message = "Login successful";
+                            // Set the session_id cookie to expire the next day
+                            const date = new Date();
+                            date.setDate(date.getDate() + 1);
+                            response.setHeader("Set-Cookie", `session_id=${sessionID}; Expires=${date}`);
+                        } else {
+                            responseObj.login_success = false;
+                            responseObj.message = "Invalid email or password";
                         }
+                    } else { // CREATE the account
+                        await connection.query("INSERT INTO users (email, password) VALUES (?, ?);", [email, password]);
+                        responseObj.account_created = true;
+                        responseObj.message = "Account successfuly created";
                     }
-                    else { // add the user
-                        await pool.query("INSERT INTO users (email, password) VALUES (?, ?);", [email, password])
-                    }
+
+                    connection.release();
+
+                    response.statusCode = 200;
+                    response.end(JSON.stringify(responseObj));
 
                 } else {
-                    throw Error(`user input:\n  username:`);
+                    throw Error("Invalid Input");
                 }
             } catch (e) {
-                console.log("POST request error:\n" + e);
+                console.error(e.stack);
+                response.statusCode = 500;
+                responseObj.message = e;
+                response.end(JSON.stringify(responseObj));
             }
-
-            response.end();
         });
     }
 });

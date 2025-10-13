@@ -46,6 +46,7 @@ CREATE TABLE users(
     user_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     email VARCHAR(40) NOT NULL,
     password VARCHAR(40) NOT NULL,
+    session_id CHAR(15),
     date_created TIMESTAMP NOT NULL
 );
 DESCRIBE users;
