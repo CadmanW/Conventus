@@ -36,13 +36,22 @@ const mime_types = {
 const server = http.createServer();
 
 // Request listener
-server.on("request", (request, response) => {
+server.on("request", async (request, response) => {
 
     if (request.method === "GET") {
 
-        //TODO: rewrite this ton use authentication n stuff
+        // Parse the cookies from the HTTP request headers
+        const cookies = {};
+        (request.headers.cookie ?? "").split("; ").forEach(cookieARR => {
+            const [key, value] = cookieARR;
+            cookies[key] = value;
+        });
 
-        console.log(request.url);
+        //TODO do stuff when authentication
+        if ((await pool.query("SELECT 1 FROM users WHERE session_id=?", [cookies.session_id]))[0]['1']) {
+            console.log("user is logged in");
+        }
+        
 
         // Gets the login.html file if no specific file is requested
         if (request.url.slice(-1) === "/") {
@@ -91,19 +100,20 @@ server.on("request", (request, response) => {
                         const connection = await pool.getConnection();
 
                         // Check if the user exists so we can either LOGIN or CREATE an account
-                        if ((await connection.query("SELECT email FROM users WHERE email=?", [email])).length) {
+                        const [user] = connection.query("SELECT email, password FROM users WHERE email=?", [email]);
+                        if (user) {
                             // LOGIN
                             // check if password sent matches DB password for the email given
-                            if (password === (await connection.query("SELECT password FROM users WHERE email=?", email))[0].password) {
+                            if (password === user.password) {
                                 const sessionID = Math.floor(Math.random() * 10**15);
                                 // Set the session ID in DB
                                 await connection.query("UPDATE users SET session_id=? WHERE email=?", [sessionID, email]);
                                 responseObj.login_success = true;
                                 responseObj.message = "Login successful";
-                                // Set the session_id cookie to expire the next day
+                                // Set the session_id cookie to expire the next day, set path to "/" so it gets sent with every request to the webserver
                                 const date = new Date();
                                 date.setDate(date.getDate() + 1);
-                                response.setHeader("Set-Cookie", `session_id=${sessionID}; Expires=${date}`);
+                                response.setHeader("Set-Cookie", `session_id=${sessionID}; Expires=${date.toUTCString()}; Path=/; HttpOnly`);
                             } else {
                                 responseObj.login_success = false;
                                 responseObj.message = "Invalid email or password";
